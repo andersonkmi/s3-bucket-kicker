@@ -29,6 +29,7 @@ dependencies {
     // AWS related
     implementation platform('software.amazon.awssdk:bom:2.5.29')
     implementation 'software.amazon.awssdk:sqs'
+    implementation 'software.amazon.awssdk:s3'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.0-jre'
