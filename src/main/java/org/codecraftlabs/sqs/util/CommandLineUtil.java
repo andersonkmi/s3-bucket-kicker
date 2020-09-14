@@ -11,10 +11,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.codecraftlabs.sqs.util.AppArguments.INTERVAL_SECONDS_OPTION;
-import static org.codecraftlabs.sqs.util.AppArguments.OPERATION_OPTION;
-import static org.codecraftlabs.sqs.util.AppArguments.SQS_URL_OPTION;
-
 public class CommandLineUtil {
     private CommandLineParser commandLineParser;
 
@@ -51,8 +47,8 @@ public class CommandLineUtil {
     }
 
     public static void help() {
-        var header = "\nAWS SQS producer sandbox app\n";
+        var header = "\nAWS S3 uploader\n";
         var footer = "\nThank you for using\n";
-        new HelpFormatter().printHelp("java -jar aws-sqs-producer-all.jar", header, cmdLineOpts, footer, true);
+        new HelpFormatter().printHelp("java -jar aws-s3-kikker-all.jar", header, cmdLineOpts, footer, true);
     }
 }

@@ -101,22 +101,7 @@ public class Main {
                         break;
                     }
                 }
-            } else if (arguments.option(OPERATION_OPTION).equals(RECV_MESSAGE_OPERATION)) {
-                while (true) {
-                    var serviceExecutor = new SQSConsumerService();
-                    serviceExecutor.execute(arguments);
-
-                    var intervalValue = Long.parseLong(interval);
-                    logger.info(String.format("Pausing for %d seconds", intervalValue));
-                    Thread.sleep(intervalValue * 1000);
-
-                    if (isVMShuttingDown) {
-                        signalReadyToExit();
-                        break;
-                    }
-                }
             }
-
             logger.info("Finishing app");
             unregisterShutdownHook();
         } catch (AWSException exception) {
