@@ -11,18 +11,22 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.codecraftlabs.sqs.util.AppArguments.INPUT_FOLDER;
+import static org.codecraftlabs.sqs.util.AppArguments.S3_BUCKET;
+import static org.codecraftlabs.sqs.util.AppArguments.S3_PREFIX;
+
 public class CommandLineUtil {
-    private CommandLineParser commandLineParser;
+    private final CommandLineParser commandLineParser;
 
     private static final Logger logger = LogManager.getLogger(CommandLineUtil.class);
 
-    public static final String SQS_URL_OPT = "s";
-    public static final String INTERVAL_SECONDS_OPT = "i";
-    public static final String OPERATION_OPT = "o";
+    private static final String INPUT_FOLDER_OPTION = "i";
+    private static final String S3_BUCKET_OPTION = "b";
+    private static final String S3_PREFIX_OPTION = "p";
 
-    final private static Options cmdLineOpts = new Options().addRequiredOption(SQS_URL_OPT, SQS_URL_OPTION, true, "SQS url")
-            .addRequiredOption(OPERATION_OPT, OPERATION_OPTION, true, "Operation to be performed")
-            .addRequiredOption(INTERVAL_SECONDS_OPT, INTERVAL_SECONDS_OPTION, true, "Interval in seconds");
+    final private static Options cmdLineOpts = new Options().addRequiredOption(INPUT_FOLDER_OPTION, INPUT_FOLDER, true, "Input folder")
+            .addRequiredOption(S3_BUCKET_OPTION, S3_BUCKET, true, "S3 bucket to upload the files")
+            .addRequiredOption(S3_PREFIX_OPTION, S3_PREFIX, true, "S3 bucket prefix");
 
     public CommandLineUtil() {
         commandLineParser = new DefaultParser();
@@ -35,9 +39,9 @@ public class CommandLineUtil {
 
         try {
             var cmdLine = commandLineParser.parse(cmdLineOpts, args);
-            options.put(SQS_URL_OPTION, cmdLine.getOptionValue(SQS_URL_OPT));
-            options.put(INTERVAL_SECONDS_OPTION, cmdLine.getOptionValue(INTERVAL_SECONDS_OPT));
-            options.put(OPERATION_OPTION, cmdLine.getOptionValue(OPERATION_OPT));
+            options.put(INPUT_FOLDER, cmdLine.getOptionValue(INPUT_FOLDER_OPTION));
+            options.put(S3_BUCKET, cmdLine.getOptionValue(S3_BUCKET_OPTION));
+            options.put(S3_PREFIX, cmdLine.getOptionValue(S3_PREFIX_OPTION));
 
             return new AppArguments(options);
         } catch (ParseException exception) {

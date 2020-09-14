@@ -3,7 +3,7 @@ package org.codecraftlabs.sqs.util;
 import java.util.Map;
 
 public class AppArguments {
-    public static final String SOURCE_FOLDER = "input-folder";
+    public static final String INPUT_FOLDER = "input-folder";
     public static final String S3_BUCKET = "bucket";
     public static final String S3_PREFIX = "prefix";
 
