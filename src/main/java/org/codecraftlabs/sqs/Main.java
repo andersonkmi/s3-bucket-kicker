@@ -79,7 +79,10 @@ public class Main {
             }
             logger.info("Finishing app");
             unregisterShutdownHook();
-        } catch (InvalidArgumentException | IllegalArgumentException | CommandLineException | InterruptedException exception) {
+        } catch (InvalidArgumentException |
+                 IllegalArgumentException |
+                 CommandLineException |
+                 InterruptedException exception) {
             logger.error("Failed to parse command line options", exception);
             help();
         }
