@@ -10,10 +10,9 @@ import java.util.Set;
 
 public class AppArgsValidator {
     private static final Logger logger = LogManager.getLogger(AppArgsValidator.class);
-    private Set<AppArgumentsValidationPolicy> policies;
+    private final Set<AppArgumentsValidationPolicy> policies = new LinkedHashSet<>();
 
     private AppArgsValidator() {
-        policies = new LinkedHashSet<>();
     }
 
     public static AppArgsValidator build() {
