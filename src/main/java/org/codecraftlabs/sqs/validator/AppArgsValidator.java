@@ -14,8 +14,6 @@ public class AppArgsValidator {
 
     private AppArgsValidator() {
         policies = new LinkedHashSet<>();
-        policies.add(new UrlValidationPolicy());
-        policies.add(new OperationValidationPolicy());
     }
 
     public static AppArgsValidator build() {
