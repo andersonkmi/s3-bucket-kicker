@@ -12,6 +12,7 @@ import org.codecraftlabs.sqs.validator.InvalidArgumentException;
 
 import java.util.UUID;
 
+import static java.lang.Thread.sleep;
 import static org.codecraftlabs.sqs.util.AppArguments.INTERVAL_SECONDS_OPTION;
 import static org.codecraftlabs.sqs.util.AppArguments.OPERATION_OPTION;
 import static org.codecraftlabs.sqs.util.AppArguments.RECV_MESSAGE_OPERATION;
@@ -35,14 +36,12 @@ public class Main {
     }
 
     private void registerShutdownHook() {
-        logger.info("Registering shutdown hook");
-
         this.shutdownThread = new Thread("ShutdownHook") {
             public void run() {
                 synchronized(this) {
                     if (!readyToExit) {
                         isVMShuttingDown = true;
-                        logger.info("Control-C detected... Terminating process, please wait.");
+                        logger.info("Control-C detected. Terminating process, please wait.");
                         try {
                             // Wait up to 1.5 secs for a record to be processed.
                             wait(1500);
@@ -80,7 +79,6 @@ public class Main {
             var cliValidator = build();
             cliValidator.validate(arguments);
 
-            var interval = arguments.option(INTERVAL_SECONDS_OPTION);
             if (arguments.option(OPERATION_OPTION).equals(SEND_MESSAGE_OPERATION)) {
                 while (true) {
                     var uuid = UUID.randomUUID();
@@ -92,9 +90,9 @@ public class Main {
                     var serviceExecutor = new SQSProducerService();
                     serviceExecutor.execute(arguments, sampleData);
 
-                    var intervalValue = Long.parseLong(interval);
+                    var intervalValue = 5;
                     logger.info(String.format("Pausing for %d seconds", intervalValue));
-                    Thread.sleep(intervalValue * 1000);
+                    sleep(intervalValue * 1000);
 
                     if (isVMShuttingDown) {
                         signalReadyToExit();
