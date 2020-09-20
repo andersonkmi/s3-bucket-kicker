@@ -67,6 +67,7 @@ public class Main {
             var arguments = commandLineUtil.parse(args);
 
             var cliValidator = build();
+            cliValidator.setSkipValidation(true);
             cliValidator.validate(arguments);
 
             var intervalValue = 5;
