@@ -2,21 +2,11 @@ package org.codecraftlabs.sqs;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codecraftlabs.sqs.data.SampleData;
-import org.codecraftlabs.kikker.service.AWSException;
-import org.codecraftlabs.sqs.service.SQSConsumerService;
-import org.codecraftlabs.sqs.service.SQSProducerService;
 import org.codecraftlabs.sqs.util.CommandLineException;
 import org.codecraftlabs.sqs.util.CommandLineUtil;
 import org.codecraftlabs.sqs.validator.InvalidArgumentException;
 
-import java.util.UUID;
-
 import static java.lang.Thread.sleep;
-import static org.codecraftlabs.sqs.util.AppArguments.INTERVAL_SECONDS_OPTION;
-import static org.codecraftlabs.sqs.util.AppArguments.OPERATION_OPTION;
-import static org.codecraftlabs.sqs.util.AppArguments.RECV_MESSAGE_OPERATION;
-import static org.codecraftlabs.sqs.util.AppArguments.SEND_MESSAGE_OPERATION;
 import static org.codecraftlabs.sqs.util.CommandLineUtil.help;
 import static org.codecraftlabs.sqs.validator.AppArgsValidator.build;
 
@@ -79,31 +69,15 @@ public class Main {
             var cliValidator = build();
             cliValidator.validate(arguments);
 
-            if (arguments.option(OPERATION_OPTION).equals(SEND_MESSAGE_OPERATION)) {
-                while (true) {
-                    var uuid = UUID.randomUUID();
-                    var sampleData = new SampleData();
+            var intervalValue = 5;
+            logger.info(String.format("Pausing for %d seconds", intervalValue));
+            sleep(intervalValue * 1000);
 
-                    sampleData.setId(uuid.toString());
-                    sampleData.setName("sqs-test-app");
-                    sampleData.setProgrammingLanguage("java");
-                    var serviceExecutor = new SQSProducerService();
-                    serviceExecutor.execute(arguments, sampleData);
-
-                    var intervalValue = 5;
-                    logger.info(String.format("Pausing for %d seconds", intervalValue));
-                    sleep(intervalValue * 1000);
-
-                    if (isVMShuttingDown) {
-                        signalReadyToExit();
-                        break;
-                    }
-                }
+            if (isVMShuttingDown) {
+                signalReadyToExit();
             }
             logger.info("Finishing app");
             unregisterShutdownHook();
-        } catch (AWSException exception) {
-            logger.error(exception.getMessage(), exception);
         } catch (InvalidArgumentException | IllegalArgumentException | CommandLineException | InterruptedException exception) {
             logger.error("Failed to parse command line options", exception);
             help();
