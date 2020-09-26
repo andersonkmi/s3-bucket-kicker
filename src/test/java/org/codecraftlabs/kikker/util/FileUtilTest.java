@@ -15,6 +15,7 @@ public class FileUtilTest {
 
     @Test
     void simpleTest() {
-
+        var results = fileUtil.listFiles(".", ".java");
+        System.out.println(results);
     }
 }
