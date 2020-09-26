@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FileUtil {
-    public Set<String> listFiles(String folder, String fileExtension) {
+    public static Set<String> listFiles(String folder, String fileExtension) {
         var rootFolder = new File(folder);
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             return Collections.emptySet();
@@ -20,7 +20,7 @@ public class FileUtil {
                 Collections.emptySet();
     }
 
-    private String prependFolderName(@Nonnull final String folderName, @Nonnull final String fileName) {
+    private static String prependFolderName(@Nonnull final String folderName, @Nonnull final String fileName) {
         if (folderName.endsWith(File.pathSeparator)) {
             return folderName + fileName;
         }
