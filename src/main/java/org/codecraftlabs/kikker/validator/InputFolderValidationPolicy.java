@@ -1,16 +1,16 @@
-package org.codecraftlabs.sqs.validator;
+package org.codecraftlabs.kikker.validator;
 
-import org.codecraftlabs.sqs.util.AppArguments;
+import org.codecraftlabs.kikker.util.CommandLineArguments;
 
 import javax.annotation.Nonnull;
 
 import java.io.File;
 
-import static org.codecraftlabs.sqs.util.AppArguments.INPUT_FOLDER;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.INPUT_FOLDER;
 
 class InputFolderValidationPolicy implements AppArgumentsValidationPolicy {
     @Override
-    public void verify(@Nonnull AppArguments args) throws InvalidArgumentException {
+    public void verify(@Nonnull CommandLineArguments args) throws InvalidArgumentException {
         String folder = args.option(INPUT_FOLDER);
 
         var inputFolder = new File(folder);

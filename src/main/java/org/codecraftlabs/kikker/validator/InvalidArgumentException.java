@@ -1,4 +1,4 @@
-package org.codecraftlabs.sqs.validator;
+package org.codecraftlabs.kikker.validator;
 
 public class InvalidArgumentException extends Exception {
     public InvalidArgumentException(String message) {

@@ -1,14 +1,14 @@
-package org.codecraftlabs.sqs;
+package org.codecraftlabs.kikker;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codecraftlabs.sqs.util.CommandLineException;
-import org.codecraftlabs.sqs.util.CommandLineUtil;
-import org.codecraftlabs.sqs.validator.InvalidArgumentException;
+import org.codecraftlabs.kikker.util.CommandLineException;
+import org.codecraftlabs.kikker.util.CommandLineUtil;
+import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
 import static java.lang.Thread.sleep;
-import static org.codecraftlabs.sqs.util.CommandLineUtil.help;
-import static org.codecraftlabs.sqs.validator.AppArgsValidator.build;
+import static org.codecraftlabs.kikker.util.CommandLineUtil.help;
+import static org.codecraftlabs.kikker.validator.AppArgsValidator.build;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -66,19 +66,22 @@ public class Main {
             var commandLineUtil = new CommandLineUtil();
             var arguments = commandLineUtil.parse(args);
 
-            var cliValidator = build();
-            cliValidator.setSkipValidation(true);
+            var cliValidator = build(true);
             cliValidator.validate(arguments);
 
             var intervalValue = 5;
-            logger.info(String.format("Pausing for %d seconds", intervalValue));
-            sleep(intervalValue * 1000);
+            while(true) {
+                // Insert the logic here
 
-            if (isVMShuttingDown) {
-                signalReadyToExit();
+                logger.info(String.format("Pausing for %d seconds", intervalValue));
+                sleep(intervalValue * 1000);
+
+                if (isVMShuttingDown) {
+                    signalReadyToExit();
+                }
+                logger.info("Finishing app");
+                unregisterShutdownHook();
             }
-            logger.info("Finishing app");
-            unregisterShutdownHook();
         } catch (InvalidArgumentException |
                  IllegalArgumentException |
                  CommandLineException |

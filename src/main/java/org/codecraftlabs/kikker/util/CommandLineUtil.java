@@ -1,4 +1,4 @@
-package org.codecraftlabs.sqs.util;
+package org.codecraftlabs.kikker.util;
 
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.codecraftlabs.sqs.util.AppArguments.INPUT_FOLDER;
-import static org.codecraftlabs.sqs.util.AppArguments.S3_BUCKET;
-import static org.codecraftlabs.sqs.util.AppArguments.S3_PREFIX;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.INPUT_FOLDER;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_BUCKET;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_PREFIX;
 
 public class CommandLineUtil {
     private final CommandLineParser commandLineParser;
@@ -32,7 +32,7 @@ public class CommandLineUtil {
         commandLineParser = new DefaultParser();
     }
 
-    public AppArguments parse(String[] args) throws CommandLineException {
+    public CommandLineArguments parse(String[] args) throws CommandLineException {
         logger.info("Parsing command line arguments");
 
         final Map<String, String> options = new HashMap<>();
@@ -43,7 +43,7 @@ public class CommandLineUtil {
             options.put(S3_BUCKET, cmdLine.getOptionValue(S3_BUCKET_OPTION));
             options.put(S3_PREFIX, cmdLine.getOptionValue(S3_PREFIX_OPTION));
 
-            return new AppArguments(options);
+            return new CommandLineArguments(options);
         } catch (ParseException exception) {
             logger.error("Command line parse error", exception);
             throw new CommandLineException("Error when parsing command line options", exception);
