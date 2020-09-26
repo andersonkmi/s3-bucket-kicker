@@ -1,6 +1,8 @@
 package org.codecraftlabs.kikker.util;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,6 +12,8 @@ public class FileUtil {
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             return Collections.emptyList();
         }
-        return null;
+
+        var matchedFiles = rootFolder.list((dir, name) -> name.endsWith(fileExtension));
+        return matchedFiles != null ? Arrays.asList(matchedFiles) : Collections.emptyList();
     }
 }
