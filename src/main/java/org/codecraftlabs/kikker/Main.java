@@ -1,13 +1,23 @@
 package org.codecraftlabs.kikker;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codecraftlabs.kikker.service.AWSException;
+import org.codecraftlabs.kikker.service.S3Service;
 import org.codecraftlabs.kikker.util.CommandLineException;
 import org.codecraftlabs.kikker.util.CommandLineUtil;
 import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
+import java.util.Map;
+
 import static java.lang.Thread.sleep;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.FILE_EXTENSION;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.INPUT_FOLDER;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_BUCKET;
+import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_PREFIX;
 import static org.codecraftlabs.kikker.util.CommandLineUtil.help;
+import static org.codecraftlabs.kikker.util.FileUtil.listFiles;
 import static org.codecraftlabs.kikker.validator.AppArgsValidator.build;
 
 public class Main {
@@ -31,7 +41,7 @@ public class Main {
                 synchronized(this) {
                     if (!readyToExit) {
                         isVMShuttingDown = true;
-                        logger.info("Control-C detected. Terminating process, please wait.");
+                        //logger.info("Control-C detected. Terminating process, please wait.");
                         try {
                             // Wait up to 1.5 secs for a record to be processed.
                             wait(1500);
@@ -69,9 +79,21 @@ public class Main {
             var cliValidator = build(true);
             cliValidator.validate(arguments);
 
+            var s3Service = new S3Service();
+
             var intervalValue = 5;
             while(true) {
                 // Insert the logic here
+                var filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
+                var entries = filesToUpload.entrySet();
+
+                for (Map.Entry<String, String> entry : entries) {
+                    try {
+                        s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + entry.getKey(), entry.getValue());
+                    } catch (AWSException exception) {
+                        logger.error("Failed to upload file: " + entry.getValue(), exception);
+                    }
+                }
 
                 logger.info(String.format("Pausing for %d seconds", intervalValue));
                 sleep(intervalValue * 1000);
@@ -82,11 +104,11 @@ public class Main {
                 logger.info("Finishing app");
                 unregisterShutdownHook();
             }
-        } catch (InvalidArgumentException |
-                 IllegalArgumentException |
-                 CommandLineException |
+        } catch (IllegalArgumentException |
                  InterruptedException exception) {
             logger.error("Failed to parse command line options", exception);
+        } catch (CommandLineException | InvalidArgumentException exception) {
+            logger.error("Failed to parse command line options");
             help();
         }
     }

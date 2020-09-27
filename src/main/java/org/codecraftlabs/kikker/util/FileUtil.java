@@ -3,21 +3,26 @@ package org.codecraftlabs.kikker.util;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileUtil {
-    public static Set<String> listFiles(String folder, String fileExtension) {
+    public static Map<String, String> listFiles(String folder, String fileExtension) {
+        var result = new HashMap<String, String>();
+
         var rootFolder = new File(folder);
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
-            return Collections.emptySet();
+            return result;
         }
 
         var matchedFiles = rootFolder.list((dir, name) -> name.endsWith(fileExtension));
-        return matchedFiles != null ?
-                Arrays.stream(matchedFiles).map(item -> prependFolderName(folder, item)).collect(Collectors.toSet()) :
-                Collections.emptySet();
+        if (matchedFiles != null) {
+            Arrays.stream(matchedFiles).forEach(item -> {
+                var fullPath = prependFolderName(folder, item);
+                result.put(item, fullPath);
+            });
+        }
+        return result;
     }
 
     private static String prependFolderName(@Nonnull final String folderName, @Nonnull final String fileName) {

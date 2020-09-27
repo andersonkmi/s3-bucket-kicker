@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.codecraftlabs.kikker.util.CommandLineArguments.FILE_EXTENSION;
 import static org.codecraftlabs.kikker.util.CommandLineArguments.INPUT_FOLDER;
 import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_BUCKET;
 import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_PREFIX;
@@ -21,10 +22,12 @@ public class CommandLineUtil {
     private static final Logger logger = LogManager.getLogger(CommandLineUtil.class);
 
     private static final String INPUT_FOLDER_OPTION = "i";
+    private static final String EXTENSION_OPTION = "e";
     private static final String S3_BUCKET_OPTION = "b";
     private static final String S3_PREFIX_OPTION = "p";
 
     final private static Options cmdLineOpts = new Options().addRequiredOption(INPUT_FOLDER_OPTION, INPUT_FOLDER, true, "Input folder")
+            .addRequiredOption(EXTENSION_OPTION, FILE_EXTENSION, true, "File extension")
             .addRequiredOption(S3_BUCKET_OPTION, S3_BUCKET, true, "S3 bucket to upload the files")
             .addRequiredOption(S3_PREFIX_OPTION, S3_PREFIX, true, "S3 bucket prefix");
 
@@ -42,10 +45,10 @@ public class CommandLineUtil {
             options.put(INPUT_FOLDER, cmdLine.getOptionValue(INPUT_FOLDER_OPTION));
             options.put(S3_BUCKET, cmdLine.getOptionValue(S3_BUCKET_OPTION));
             options.put(S3_PREFIX, cmdLine.getOptionValue(S3_PREFIX_OPTION));
+            options.put(FILE_EXTENSION, cmdLine.getOptionValue(EXTENSION_OPTION));
 
             return new CommandLineArguments(options);
         } catch (ParseException exception) {
-            logger.error("Command line parse error", exception);
             throw new CommandLineException("Error when parsing command line options", exception);
         }
     }

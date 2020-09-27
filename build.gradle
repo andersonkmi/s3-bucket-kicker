@@ -52,7 +52,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'org.codecraftlabs.sqs.Main'
+    mainClassName = 'org.codecraftlabs.kikker.Main'
 }
 
 test {
