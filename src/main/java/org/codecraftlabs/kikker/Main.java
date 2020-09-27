@@ -1,6 +1,5 @@
 package org.codecraftlabs.kikker;
 
-import org.apache.commons.cli.MissingOptionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codecraftlabs.kikker.service.AWSException;
@@ -41,12 +40,13 @@ public class Main {
                 synchronized(this) {
                     if (!readyToExit) {
                         isVMShuttingDown = true;
-                        //logger.info("Control-C detected. Terminating process, please wait.");
+                        logger.info("Control-C detected. Terminating process, please wait.");
                         try {
                             // Wait up to 1.5 secs for a record to be processed.
                             wait(1500);
                         } catch (InterruptedException ignore) {
-                            // ignore exception
+                            //
+                            logger.warn("Interruption exception", ignore);
                         }
 
                         if (!readyToExit) {
@@ -82,28 +82,27 @@ public class Main {
             var s3Service = new S3Service();
 
             var intervalValue = 5;
-            while(true) {
-                // Insert the logic here
-                var filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
-                var entries = filesToUpload.entrySet();
+            // Insert the logic here
+            var filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
+            var entries = filesToUpload.entrySet();
 
-                for (Map.Entry<String, String> entry : entries) {
-                    try {
-                        s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + entry.getKey(), entry.getValue());
-                    } catch (AWSException exception) {
-                        logger.error("Failed to upload file: " + entry.getValue(), exception);
-                    }
+            for (Map.Entry<String, String> entry : entries) {
+                try {
+                    logger.info(String.format("Uploading '%s' to bucket '%s'", entry.getValue(), arguments.option(S3_BUCKET) + "/" + arguments.option(S3_PREFIX) + "/" + entry.getKey()));
+                    s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + "/" + entry.getKey(), entry.getValue());
+                } catch (AWSException exception) {
+                    logger.error("Failed to upload file: " + entry.getValue(), exception);
                 }
-
-                logger.info(String.format("Pausing for %d seconds", intervalValue));
-                sleep(intervalValue * 1000);
-
-                if (isVMShuttingDown) {
-                    signalReadyToExit();
-                }
-                logger.info("Finishing app");
-                unregisterShutdownHook();
             }
+
+            logger.info(String.format("Pausing for %d seconds", intervalValue));
+            sleep(intervalValue * 1000);
+
+            if (isVMShuttingDown) {
+                signalReadyToExit();
+            }
+            logger.info("Finishing app");
+            unregisterShutdownHook();
         } catch (IllegalArgumentException |
                  InterruptedException exception) {
             logger.error("Failed to parse command line options", exception);

@@ -26,9 +26,9 @@ public class FileUtil {
     }
 
     private static String prependFolderName(@Nonnull final String folderName, @Nonnull final String fileName) {
-        if (folderName.endsWith(File.pathSeparator)) {
+        if (folderName.endsWith(File.separator)) {
             return folderName + fileName;
         }
-        return folderName + File.pathSeparator + fileName;
+        return folderName + File.separator + fileName;
     }
 }
