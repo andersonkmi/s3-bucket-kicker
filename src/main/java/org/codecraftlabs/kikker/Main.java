@@ -18,6 +18,7 @@ import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_PREFIX;
 import static org.codecraftlabs.kikker.util.CommandLineUtil.help;
 import static org.codecraftlabs.kikker.util.FileUtil.listFiles;
 import static org.codecraftlabs.kikker.validator.AppArgsValidator.build;
+import static software.amazon.awssdk.regions.Region.US_EAST_1;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -77,7 +78,7 @@ public class Main {
             var cliValidator = build(true);
             cliValidator.validate(arguments);
 
-            var s3Service = new S3Service();
+            var s3Service = new S3Service(US_EAST_1);
 
             var intervalValue = 5;
             // Insert the logic here
