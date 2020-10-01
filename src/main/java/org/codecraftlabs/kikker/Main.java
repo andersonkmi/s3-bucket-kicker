@@ -43,8 +43,8 @@ public class Main {
                         try {
                             // Wait up to 1.5 secs for a record to be processed.
                             wait(1500);
-                        } catch (InterruptedException ignore) {
-                            logger.warn("Interruption exception", ignore);
+                        } catch (InterruptedException exception) {
+                            //logger.warn("Interruption exception", ignore);
                         }
 
                         if (!readyToExit) {
