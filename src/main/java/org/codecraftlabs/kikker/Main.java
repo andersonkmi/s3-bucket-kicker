@@ -40,7 +40,6 @@ public class Main {
                 synchronized(this) {
                     if (!readyToExit) {
                         isVMShuttingDown = true;
-                        logger.info("Control-C detected. Terminating process, please wait.");
                         try {
                             // Wait up to 1.5 secs for a record to be processed.
                             wait(1500);
