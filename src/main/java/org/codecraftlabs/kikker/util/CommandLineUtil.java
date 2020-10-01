@@ -8,6 +8,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,8 @@ public class CommandLineUtil {
         commandLineParser = new DefaultParser();
     }
 
-    public CommandLineArguments parse(String[] args) throws CommandLineException {
+    @Nonnull
+    public CommandLineArguments parse(@Nonnull String[] args) throws CommandLineException {
         logger.info("Parsing command line arguments");
 
         final Map<String, String> options = new HashMap<>();
@@ -46,7 +48,6 @@ public class CommandLineUtil {
             options.put(S3_BUCKET, cmdLine.getOptionValue(S3_BUCKET_OPTION));
             options.put(S3_PREFIX, cmdLine.getOptionValue(S3_PREFIX_OPTION));
             options.put(FILE_EXTENSION, cmdLine.getOptionValue(EXTENSION_OPTION));
-
             return new CommandLineArguments(options);
         } catch (ParseException exception) {
             throw new CommandLineException("Error when parsing command line options", exception);

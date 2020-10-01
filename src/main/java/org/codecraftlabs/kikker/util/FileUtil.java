@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileUtil {
-    public static Map<String, String> listFiles(String folder, String fileExtension) {
+    @Nonnull
+    public static Map<String, String> listFiles(@Nonnull final String folder, @Nonnull final String fileExtension) {
         var result = new HashMap<String, String>();
 
         var rootFolder = new File(folder);
