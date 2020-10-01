@@ -15,10 +15,14 @@ import static software.amazon.awssdk.regions.Region.US_EAST_1;
 
 public class S3Service {
     private static final Logger logger = LogManager.getLogger(S3Service.class);
+    private final S3Client s3Client;
+
+    public S3Service() {
+        s3Client = S3Client.builder().region(US_EAST_1).build();
+    }
 
     public void upload(@Nonnull String bucket, @Nonnull String key, @Nonnull String file) throws AWSException {
         try {
-            var s3Client = S3Client.builder().region(US_EAST_1).build();
             s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(), fromFile(new File(file)));
         } catch (AwsServiceException exception) {
             String errorMessage = "Error when uploading object";
