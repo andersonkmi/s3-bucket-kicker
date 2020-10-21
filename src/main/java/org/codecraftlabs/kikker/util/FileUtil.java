@@ -19,7 +19,7 @@ public class FileUtil {
         String[] matchedFiles = rootFolder.list((dir, name) -> name.endsWith(fileExtension));
         if (matchedFiles != null) {
             Arrays.stream(matchedFiles).forEach(item -> {
-                var fullPath = prependFolderName(folder, item);
+                String fullPath = prependFolderName(folder, item);
                 result.put(item, fullPath);
             });
         }
