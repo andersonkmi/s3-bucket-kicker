@@ -11,7 +11,7 @@ import java.util.Set;
 public class AppArgsValidator {
     private static final Logger logger = LogManager.getLogger(AppArgsValidator.class);
     private final Set<AppArgumentsValidationPolicy> policies = new LinkedHashSet<>();
-    private boolean skipValidation = false;
+    private boolean skipValidation;
 
     private AppArgsValidator(boolean skipValidation) {
         this.skipValidation = skipValidation;
