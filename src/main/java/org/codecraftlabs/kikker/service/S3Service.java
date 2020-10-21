@@ -14,7 +14,7 @@ import static software.amazon.awssdk.core.sync.RequestBody.fromFile;
 
 public class S3Service {
     private static final Logger logger = LogManager.getLogger(S3Service.class);
-    private S3Client s3Client;
+    private final S3Client s3Client;
 
     public S3Service(@Nonnull final Region region) {
         s3Client = S3Client.builder().region(region).build();

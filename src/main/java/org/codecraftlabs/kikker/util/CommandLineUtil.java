@@ -1,5 +1,6 @@
 package org.codecraftlabs.kikker.util;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -43,7 +44,7 @@ public class CommandLineUtil {
         final Map<String, String> options = new HashMap<>();
 
         try {
-            var cmdLine = commandLineParser.parse(cmdLineOpts, args);
+            CommandLine cmdLine = commandLineParser.parse(cmdLineOpts, args);
             options.put(INPUT_FOLDER, cmdLine.getOptionValue(INPUT_FOLDER_OPTION));
             options.put(S3_BUCKET, cmdLine.getOptionValue(S3_BUCKET_OPTION));
             options.put(S3_PREFIX, cmdLine.getOptionValue(S3_PREFIX_OPTION));
@@ -55,8 +56,8 @@ public class CommandLineUtil {
     }
 
     public static void help() {
-        var header = "\nAWS S3 uploader\n";
-        var footer = "\nThank you for using\n";
+        String header = "\nAWS S3 uploader\n";
+        String footer = "\nThank you for using\n";
         new HelpFormatter().printHelp("java -jar aws-s3-kikker-all.jar", header, cmdLineOpts, footer, true);
     }
 }

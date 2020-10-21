@@ -9,14 +9,14 @@ import java.util.Map;
 public class FileUtil {
     @Nonnull
     public static Map<String, String> listFiles(@Nonnull final String folder, @Nonnull final String fileExtension) {
-        var result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
 
         var rootFolder = new File(folder);
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             return result;
         }
 
-        var matchedFiles = rootFolder.list((dir, name) -> name.endsWith(fileExtension));
+        String[] matchedFiles = rootFolder.list((dir, name) -> name.endsWith(fileExtension));
         if (matchedFiles != null) {
             Arrays.stream(matchedFiles).forEach(item -> {
                 var fullPath = prependFolderName(folder, item);
