@@ -4,11 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codecraftlabs.kikker.service.AWSException;
 import org.codecraftlabs.kikker.service.S3Service;
+import org.codecraftlabs.kikker.util.CommandLineArguments;
 import org.codecraftlabs.kikker.util.CommandLineException;
 import org.codecraftlabs.kikker.util.CommandLineUtil;
+import org.codecraftlabs.kikker.validator.AppArgsValidator;
 import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.Thread.sleep;
 import static org.codecraftlabs.kikker.util.CommandLineArguments.FILE_EXTENSION;
@@ -72,18 +75,18 @@ public class Main {
     public void start(String[] args) {
         logger.info("Starting app");
         try {
-            var commandLineUtil = new CommandLineUtil();
-            var arguments = commandLineUtil.parse(args);
+            CommandLineUtil commandLineUtil = new CommandLineUtil();
+            CommandLineArguments arguments = commandLineUtil.parse(args);
 
-            var cliValidator = build(true);
+            AppArgsValidator cliValidator = build(true);
             cliValidator.validate(arguments);
 
-            var s3Service = new S3Service(US_EAST_1);
+            S3Service s3Service = new S3Service(US_EAST_1);
 
-            var intervalValue = 5;
+            int intervalValue = 5;
             // Insert the logic here
-            var filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
-            var entries = filesToUpload.entrySet();
+            Map<String, String> filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
+            Set<Map.Entry<String, String>> entries = filesToUpload.entrySet();
 
             for (Map.Entry<String, String> entry : entries) {
                 try {
