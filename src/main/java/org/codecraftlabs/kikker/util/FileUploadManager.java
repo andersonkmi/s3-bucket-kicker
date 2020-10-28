@@ -7,14 +7,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FileUploadManager {
     private static final Logger logger = LogManager.getLogger(FileUploadManager.class);
 
     private final String controlFile;
-    private Set<String> uploadedFiles;
+    private final Set<String> uploadedFiles;
 
     public FileUploadManager() {
         controlFile = ".upload-control.txt";
@@ -23,6 +28,7 @@ public class FileUploadManager {
         // Loads the upload control file
         File uploadControlFile = new File(controlFile);
         if (uploadControlFile.exists()) {
+            logger.info("Loading control file contents");
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(uploadControlFile.getName()));
                 String line;
@@ -34,5 +40,19 @@ public class FileUploadManager {
                 logger.warn("Error when opening the control file", exception);
             }
         }
+    }
+
+    public void add(String fileName) {
+        uploadedFiles.add(fileName);
+    }
+
+    public boolean isFileAlreadyProcessed(final String fileName) {
+        return uploadedFiles.contains(fileName);
+    }
+
+    public void save() throws IOException {
+        Path controlFilePath = Paths.get(controlFile);
+        String buffer = uploadedFiles.stream().map(item -> item + "\n").collect(Collectors.joining());
+        Files.write(controlFilePath, buffer.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
     }
 }
