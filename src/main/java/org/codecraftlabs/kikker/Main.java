@@ -7,6 +7,7 @@ import org.codecraftlabs.kikker.service.S3Service;
 import org.codecraftlabs.kikker.util.CommandLineArguments;
 import org.codecraftlabs.kikker.util.CommandLineException;
 import org.codecraftlabs.kikker.util.CommandLineUtil;
+import org.codecraftlabs.kikker.util.FileUploadManager;
 import org.codecraftlabs.kikker.validator.AppArgsValidator;
 import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
@@ -88,15 +89,24 @@ public class Main {
             Map<String, String> filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
             Set<Map.Entry<String, String>> entries = filesToUpload.entrySet();
 
+            FileUploadManager fileUploadManager = new FileUploadManager();
             for (Map.Entry<String, String> entry : entries) {
                 try {
+                    if (fileUploadManager.isFileAlreadyProcessed(entry.getValue())) {
+                        logger.warn(String.format("File already uploaded: '%s'", entry.getValue()));
+                        continue;
+                    }
+
                     logger.info(String.format("Uploading '%s' to bucket '%s'", entry.getValue(), arguments.option(S3_BUCKET) + "/" + arguments.option(S3_PREFIX) + "/" + entry.getKey()));
                     s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + "/" + entry.getKey(), entry.getValue());
+
+                    fileUploadManager.add(entry.getValue());
                 } catch (AWSException exception) {
                     logger.error("Failed to upload file: " + entry.getValue(), exception);
                 }
             }
 
+            fileUploadManager.save();
             logger.info(String.format("Pausing for %d seconds", intervalValue));
             sleep(intervalValue * 1000);
 

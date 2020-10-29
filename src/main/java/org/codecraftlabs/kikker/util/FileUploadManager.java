@@ -50,9 +50,13 @@ public class FileUploadManager {
         return uploadedFiles.contains(fileName);
     }
 
-    public void save() throws IOException {
-        Path controlFilePath = Paths.get(controlFile);
-        String buffer = uploadedFiles.stream().map(item -> item + "\n").collect(Collectors.joining());
-        Files.write(controlFilePath, buffer.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+    public void save() {
+        try {
+            Path controlFilePath = Paths.get(controlFile);
+            String buffer = uploadedFiles.stream().map(item -> item + "\n").collect(Collectors.joining());
+            Files.write(controlFilePath, buffer.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException exception) {
+            logger.warn("Problem when saving file", exception);
+        }
     }
 }
