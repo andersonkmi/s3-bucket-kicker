@@ -22,9 +22,11 @@ public class FileUploadManager {
     private final Set<String> uploadedFiles;
 
     public FileUploadManager() {
-        controlFile = ".upload-control.txt";
+        String homeFolder = System.getProperty("user.home");
+        controlFile = String.format("%s" + File.separator + "%s", homeFolder, ".upload-control.txt");
         uploadedFiles = new HashSet<>();
 
+        logger.info("Upload file manager: " + controlFile);
         // Loads the upload control file
         try {
            File uploadControlFile = new File(controlFile);
