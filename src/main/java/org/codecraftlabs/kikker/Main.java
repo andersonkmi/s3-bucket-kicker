@@ -93,11 +93,11 @@ public class Main {
             for (Map.Entry<String, String> entry : entries) {
                 try {
                     if (fileUploadManager.isFileAlreadyProcessed(entry.getValue())) {
-                        logger.warn(String.format("File already uploaded: '%s'", entry.getValue()));
+                        logger.warn(String.format("File already uploaded: '%s' - skipping", entry.getValue()));
                         continue;
                     }
 
-                    logger.info(String.format("Uploading '%s' to bucket '%s'", entry.getValue(), arguments.option(S3_BUCKET) + "/" + arguments.option(S3_PREFIX) + "/" + entry.getKey()));
+                    logger.info(String.format("Uploading '%s' to bucket '%s'", entry.getValue(), "s3://" + arguments.option(S3_BUCKET) + "/" + arguments.option(S3_PREFIX) + "/" + entry.getKey()));
                     s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + "/" + entry.getKey(), entry.getValue());
 
                     fileUploadManager.add(entry.getValue());

@@ -26,20 +26,24 @@ public class FileUploadManager {
         uploadedFiles = new HashSet<>();
 
         // Loads the upload control file
-        File uploadControlFile = new File(controlFile);
-        if (uploadControlFile.exists()) {
-            logger.info("Loading control file contents");
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(uploadControlFile.getName()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    uploadedFiles.add(line);
-                }
-                reader.close();
-            } catch (IOException exception) {
-                logger.warn("Error when opening the control file", exception);
+        try {
+           File uploadControlFile = new File(controlFile);
+           if (uploadControlFile.exists()) {
+                logger.info("Loading control file contents");
+                    BufferedReader reader = new BufferedReader(new FileReader(uploadControlFile.getName()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        uploadedFiles.add(line);
+                    }
+                    reader.close();
+            } else {
+                uploadControlFile.createNewFile();
+                logger.info("New control file created");
             }
+        } catch (IOException exception) {
+            logger.warn("Error when opening the control file", exception);
         }
+
     }
 
     public void add(String fileName) {
