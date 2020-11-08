@@ -11,6 +11,8 @@ import org.codecraftlabs.kikker.util.FileUploadManager;
 import org.codecraftlabs.kikker.validator.AppArgsValidator;
 import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,6 +76,7 @@ public class Main {
     }
 
     public void start(String[] args) {
+        Instant start = Instant.now();
         logger.info("Starting app");
         try {
             CommandLineUtil commandLineUtil = new CommandLineUtil();
@@ -114,6 +117,9 @@ public class Main {
                 signalReadyToExit();
             }
             logger.info("Finishing app");
+            Instant end = Instant.now();
+            Duration timeElapsed = Duration.between(start, end);
+            logger.info("Time taken: " + timeElapsed.toMillis() + " milliseconds");
             unregisterShutdownHook();
         } catch (IllegalArgumentException |
                  InterruptedException exception) {
