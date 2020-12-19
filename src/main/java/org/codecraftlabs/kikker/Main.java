@@ -69,7 +69,6 @@ public class Main {
 
     /** Unregister the shutdown hook. */
     private void unregisterShutdownHook() {
-        logger.warn("Unregistering shutdown hook");
         try {
             Runtime.getRuntime().removeShutdownHook(this.shutdownThread);
         } catch (IllegalStateException ignore) {
