@@ -39,8 +39,12 @@ public class FileUploadManager {
                     }
                     reader.close();
             } else {
-                uploadControlFile.createNewFile();
-                logger.info("New control file created");
+                boolean result = uploadControlFile.createNewFile();
+                if (result) {
+                    logger.info("New control file created");
+                } else {
+                    logger.warn("New control file not created");
+                }
             }
         } catch (IOException exception) {
             logger.warn("Error when opening the control file", exception);

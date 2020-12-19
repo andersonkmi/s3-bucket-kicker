@@ -13,6 +13,8 @@ import org.codecraftlabs.kikker.validator.InvalidArgumentException;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,10 +90,12 @@ public class Main {
             S3Service s3Service = new S3Service(US_EAST_1);
 
             int intervalValue = 5;
-            // Insert the logic here
             Map<String, String> filesToUpload = listFiles(arguments.option(INPUT_FOLDER), arguments.option(FILE_EXTENSION));
             Set<Map.Entry<String, String>> entries = filesToUpload.entrySet();
 
+            List<Map.Entry<String, String>> retryList = new ArrayList<>();
+
+            // Regular processing
             FileUploadManager fileUploadManager = new FileUploadManager();
             for (Map.Entry<String, String> entry : entries) {
                 try {
@@ -106,6 +110,22 @@ public class Main {
                     fileUploadManager.add(entry.getValue());
                 } catch (AWSException exception) {
                     logger.error("Failed to upload file: " + entry.getValue(), exception);
+                    retryList.add(entry);
+                }
+            }
+
+            // Process retry list if needed
+            if (! retryList.isEmpty()) {
+                logger.info(String.format("Pausing for %d seconds before processing retry list", intervalValue));
+                sleep(intervalValue * 1000);
+                for (Map.Entry<String, String> entry : retryList) {
+                    try {
+                        logger.info(String.format("Uploading '%s' to bucket '%s'", entry.getValue(), "s3://" + arguments.option(S3_BUCKET) + "/" + arguments.option(S3_PREFIX) + "/" + entry.getKey()));
+                        s3Service.upload(arguments.option(S3_BUCKET), arguments.option(S3_PREFIX) + "/" + entry.getKey(), entry.getValue());
+                        fileUploadManager.add(entry.getValue());
+                    } catch (AWSException exception) {
+                        logger.error("Failed to upload file again: " + entry.getValue(), exception);
+                    }
                 }
             }
 
@@ -119,7 +139,7 @@ public class Main {
             logger.info("Finishing app");
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
-            logger.info("Time taken: " + timeElapsed.toMillis() + " milliseconds");
+            logger.info("Time taken: " + timeElapsed.toSeconds() + " seconds");
             unregisterShutdownHook();
         } catch (IllegalArgumentException |
                  InterruptedException exception) {
