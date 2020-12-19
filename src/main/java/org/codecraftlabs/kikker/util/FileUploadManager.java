@@ -32,7 +32,7 @@ public class FileUploadManager {
            File uploadControlFile = new File(controlFile);
            if (uploadControlFile.exists()) {
                 logger.info("Loading control file contents");
-                    BufferedReader reader = new BufferedReader(new FileReader(uploadControlFile.getName()));
+                    BufferedReader reader = new BufferedReader(new FileReader(controlFile));
                     String line;
                     while ((line = reader.readLine()) != null) {
                         uploadedFiles.add(line);
