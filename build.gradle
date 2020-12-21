@@ -23,6 +23,7 @@ repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenLocal()
 }
 
 dependencies {
@@ -48,6 +49,8 @@ dependencies {
 
     // Including Apache CLI
     compile 'commons-cli:commons-cli:1.4'
+
+    compile 'org.codecraftlabs.mercury:mercury:1.0.0'
 }
 
 application {
