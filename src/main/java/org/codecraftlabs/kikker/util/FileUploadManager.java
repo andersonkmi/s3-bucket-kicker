@@ -2,6 +2,7 @@ package org.codecraftlabs.kikker.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codecraftlabs.mercury.crypto.DataDigestUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,8 +21,10 @@ public class FileUploadManager {
 
     private final String controlFile;
     private final Set<String> uploadedFiles;
+    private DataDigestUtil dataDigestUtil;
 
-    public FileUploadManager() {
+    public FileUploadManager(DataDigestUtil dataDigestUtil) {
+        this.dataDigestUtil = dataDigestUtil;
         String homeFolder = System.getProperty("user.home");
         controlFile = String.format("%s" + File.separator + "%s", homeFolder, ".upload-control.txt");
         uploadedFiles = new HashSet<>();

@@ -10,6 +10,7 @@ import org.codecraftlabs.kikker.util.CommandLineUtil;
 import org.codecraftlabs.kikker.util.FileUploadManager;
 import org.codecraftlabs.kikker.validator.AppArgsValidator;
 import org.codecraftlabs.kikker.validator.InvalidArgumentException;
+import org.codecraftlabs.mercury.crypto.DataDigestUtil;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -26,6 +27,7 @@ import static org.codecraftlabs.kikker.util.CommandLineArguments.S3_PREFIX;
 import static org.codecraftlabs.kikker.util.CommandLineUtil.help;
 import static org.codecraftlabs.kikker.util.FileUtil.listFiles;
 import static org.codecraftlabs.kikker.validator.AppArgsValidator.build;
+import static org.codecraftlabs.mercury.crypto.DigestAlgorithm.SHA256;
 import static software.amazon.awssdk.regions.Region.US_EAST_1;
 
 public class Main {
@@ -95,7 +97,7 @@ public class Main {
             List<Map.Entry<String, String>> retryList = new ArrayList<>();
 
             // Regular processing
-            FileUploadManager fileUploadManager = new FileUploadManager();
+            FileUploadManager fileUploadManager = new FileUploadManager(new DataDigestUtil(SHA256));
             for (Map.Entry<String, String> entry : entries) {
                 try {
                     if (fileUploadManager.isFileAlreadyProcessed(entry.getValue())) {
