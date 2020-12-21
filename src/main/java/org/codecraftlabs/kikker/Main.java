@@ -101,7 +101,7 @@ public class Main {
             for (Map.Entry<String, String> entry : entries) {
                 try {
                     if (fileUploadManager.isFileAlreadyProcessed(entry.getValue())) {
-                        logger.warn(String.format("File already uploaded: '%s' - skipping", entry.getValue()));
+                        logger.info(String.format("File already uploaded: '%s' - skipping", entry.getValue()));
                         continue;
                     }
 
