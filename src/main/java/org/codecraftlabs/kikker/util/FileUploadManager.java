@@ -3,6 +3,7 @@ package org.codecraftlabs.kikker.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codecraftlabs.mercury.crypto.DataDigestUtil;
+import org.codecraftlabs.mercury.crypto.DigestException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +22,7 @@ public class FileUploadManager {
 
     private final String controlFile;
     private final Set<String> uploadedFiles;
-    private DataDigestUtil dataDigestUtil;
+    private final DataDigestUtil dataDigestUtil;
 
     public FileUploadManager(DataDigestUtil dataDigestUtil) {
         this.dataDigestUtil = dataDigestUtil;
@@ -56,11 +57,22 @@ public class FileUploadManager {
     }
 
     public void add(String fileName) {
-        uploadedFiles.add(fileName);
+        try {
+            String digest = dataDigestUtil.generateDigestForFile(fileName);
+            uploadedFiles.add(digest);
+        } catch (DigestException exception) {
+            logger.warn("Error when processing digest for file: " + fileName, exception);
+        }
     }
 
     public boolean isFileAlreadyProcessed(final String fileName) {
-        return uploadedFiles.contains(fileName);
+        try {
+            String digest = dataDigestUtil.generateDigestForFile(fileName);
+            return uploadedFiles.contains(digest);
+        } catch (DigestException exception) {
+            logger.warn("Error when processing digest for file: " + fileName, exception);
+            return false;
+        }
     }
 
     public void save() {
