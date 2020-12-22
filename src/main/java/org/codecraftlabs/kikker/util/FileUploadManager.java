@@ -31,7 +31,6 @@ public class FileUploadManager {
         uploadedFiles = new HashSet<>();
 
         logger.info("Upload file manager: " + controlFile);
-        // Loads the upload control file
         try {
            File uploadControlFile = new File(controlFile);
            if (uploadControlFile.exists()) {
@@ -43,8 +42,7 @@ public class FileUploadManager {
                     }
                     reader.close();
             } else {
-                boolean result = uploadControlFile.createNewFile();
-                if (result) {
+                if (uploadControlFile.createNewFile()) {
                     logger.info("New control file created");
                 } else {
                     logger.warn("New control file not created");
@@ -53,10 +51,13 @@ public class FileUploadManager {
         } catch (IOException exception) {
             logger.warn("Error when opening the control file", exception);
         }
-
     }
 
     public void add(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return;
+        }
+
         try {
             String digest = dataDigestUtil.generateDigestForFile(fileName);
             uploadedFiles.add(digest);

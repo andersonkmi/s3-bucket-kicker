@@ -11,7 +11,7 @@ public class FileUtil {
     public static Map<String, String> listFiles(@Nonnull final String folder, @Nonnull final String fileExtension) {
         Map<String, String> result = new HashMap<>();
 
-        var rootFolder = new File(folder);
+        File rootFolder = new File(folder);
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             return result;
         }
